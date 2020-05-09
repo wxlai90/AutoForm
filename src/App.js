@@ -1,26 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
 
-function App() {
+/**
+ * Desired API
+ * @param {object} schema JSON schema for fields to be populated
+ * @param {function} handleChange Function to handle input event and set state object
+ */
+
+
+const App = () => {
+
+  const fields = [
+    {
+      name: 'name',
+      type: 'text',
+      initialValue: 'your name'
+    },
+    {
+      name: 'country',
+      type: 'text'
+    },
+    {
+      name: 'nickname',
+      type: 'text'
+    }
+  ]
+
+  const [state, setState] = useState([])
+
+  const initState = () => {
+    const newState = fields.map(field => ({ ...field, value: field.initialValue || '' }))
+    setState(newState)
+  }
+
+  const handleChange = ({ target: { name, value } }) => {
+    setState(prevState => prevState.map(field => field.name === name ? ({ ...field, value }) : field))
+  }
+
+  useEffect(initState, [])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <div>
+      {
+        state.map(state => (
+          <input
+            type={state.type}
+            name={state.name}
+            key={state.name}
+            placeholder={state.name}
+            onChange={handleChange}
+            value={state.value}
+          />
+        ))
+      }
+      <button onClick={() => console.log(state)}>Show State</button>
+    </div >
+  )
 }
 
-export default App;
+export default App
